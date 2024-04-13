@@ -1,9 +1,9 @@
 package com.tale.model.entity;
 
-import com.blade.jdbc.annotation.Table;
+import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
-
-import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 
 /**
  * 配置选项
@@ -12,17 +12,22 @@ import java.io.Serializable;
  */
 @Data
 @Table(name = "t_options", pk = "name")
-public class Options implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class Options extends Model {
 
-    private static final long serialVersionUID = 1L;
-
-    // 配置名称
+    /**
+     * 配置键
+     */
     private String name;
 
-    // 配置值
+    /**
+     * 配置值
+     */
     private String value;
 
-    // 配置描述
+    /**
+     * 配置描述
+     */
     private String description;
 
 }

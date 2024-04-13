@@ -1,9 +1,8 @@
 package com.tale.model.entity;
 
-import com.blade.jdbc.annotation.Table;
+import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 数据关系
@@ -12,14 +11,16 @@ import java.io.Serializable;
  */
 @Data
 @Table(name = "t_relationships", pk = "mid")
-public class Relationships implements Serializable {
+public class Relationships extends Model {
 
-    private static final long serialVersionUID = 1L;
-
-    // 内容主键
+    /**
+     * 文章主键
+     */
     private Integer cid;
 
-    // 项目主键
+    /**
+     * 项目主键
+     */
     private Integer mid;
 
 }

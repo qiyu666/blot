@@ -1,17 +1,14 @@
 package com.tale.extension;
 
-import com.blade.jdbc.model.Paginator;
 import com.blade.kit.*;
+import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
-import com.tale.init.TaleConst;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
+import io.github.biezhi.anima.page.Page;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,16 +19,9 @@ import java.util.regex.Pattern;
  */
 public final class Commons {
 
-    private static SiteService siteService;
-
-    private static final List EMPTY = new ArrayList(0);
-
-    private static final Random rand = new Random();
-    
     private static final String TEMPLATES = "/templates/";
 
     public static void setSiteService(SiteService ss) {
-        siteService = ss;
         Theme.setSiteService(ss);
     }
 
@@ -41,8 +31,18 @@ public final class Commons {
      * @param paginator
      * @return
      */
-    public static boolean is_empty(Paginator paginator) {
-        return null == paginator || BladeKit.isEmpty(paginator.getList());
+    public static boolean is_empty(Page<?> paginator) {
+        return null == paginator || BladeKit.isEmpty(paginator.getRows());
+    }
+
+    /**
+     * 判断字符串不为空
+     *
+     * @param str
+     * @return
+     */
+    public static boolean not_empty(String str) {
+        return StringKit.isNotBlank(str);
     }
 
     /**
@@ -83,6 +83,24 @@ public final class Commons {
     }
 
     /**
+     * 网站子标题
+     *
+     * @return
+     */
+    public static String site_subtitle() {
+        return site_option("site_subtitle");
+    }
+
+    /**
+     * 是否允许使用云公共静态资源
+     *
+     * @return
+     */
+    public static String allow_cloud_CDN() {
+        return site_option("allow_cloud_CDN");
+    }
+
+    /**
      * 网站配置项
      *
      * @param key
@@ -108,9 +126,10 @@ public final class Commons {
 
     /**
      * 返回站点设置的描述信息
+     *
      * @return
      */
-    public static String site_description(){
+    public static String site_description() {
         return site_option("site_description");
     }
 
@@ -155,11 +174,11 @@ public final class Commons {
      * @return
      */
     public static String gravatar(String email) {
-        String avatarUrl = "https://secure.gravatar.com/avatar";
+        String avatarUrl = "https://cn.gravatar.com/avatar";
         if (StringKit.isBlank(email)) {
             return avatarUrl;
         }
-        String hash = EncrypKit.md5(email.trim().toLowerCase());
+        String hash = EncryptKit.md5(email.trim().toLowerCase());
         return avatarUrl + "/" + hash;
     }
 
@@ -175,6 +194,7 @@ public final class Commons {
 
     /**
      * 格式化日期
+     *
      * @param date
      * @param fmt
      * @return
@@ -199,26 +219,28 @@ public final class Commons {
 
     /**
      * 获取随机数
+     *
      * @param max
      * @param str
      * @return
      */
-    public static String random(int max, String str){
+    public static String random(int max, String str) {
         return UUID.random(1, max) + str;
     }
 
     /**
      * An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!
-     *
+     * <p>
      * 这种格式的字符转换为emoji表情
      *
      * @param value
      * @return
      */
-    public static String emoji(String value){
+    public static String emoji(String value) {
         return EmojiParser.parseToUnicode(value);
     }
 
+    private static final Pattern SRC_PATTERN = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)");
     /**
      * 获取文章第一张图片
      *
@@ -227,14 +249,14 @@ public final class Commons {
     public static String show_thumb(String content) {
         content = TaleUtils.mdToHtml(content);
         if (content.contains("<img")) {
-            String img = "";
-            String regEx_img = "<img.*src\\s*=\\s*(.*?)[^>]*?>";
-            Pattern p_image = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
-            Matcher m_image = p_image.matcher(content);
+            String  img       = "";
+            String  regEx_img = "<img.*src\\s*=\\s*(.*?)[^>]*?>";
+            Pattern p_image   = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
+            Matcher m_image   = p_image.matcher(content);
             if (m_image.find()) {
                 img = img + "," + m_image.group();
                 // //匹配src
-                Matcher m = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)").matcher(img);
+                Matcher m = SRC_PATTERN.matcher(img);
                 if (m.find()) {
                     return m.group(1);
                 }

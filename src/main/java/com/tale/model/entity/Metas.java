@@ -1,9 +1,9 @@
 package com.tale.model.entity;
 
-import com.blade.jdbc.annotation.Table;
+import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Ignore;
+import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 元数据
@@ -12,28 +12,47 @@ import java.io.Serializable;
  */
 @Data
 @Table(name = "t_metas", pk = "mid")
-public class Metas implements Serializable {
+public class Metas extends Model {
 
-    private static final long serialVersionUID = 1L;
-
-    // 项目主键
+    /**
+     * 项目主键
+     */
     private Integer mid;
 
-    // 名称
-    private String name;
+    /**
+     * 项目名称
+     */
+    private String  name;
 
-    // 项目缩略名
-    private String slug;
+    /**
+     * 项目缩略名
+     */
+    private String  slug;
 
-    // 项目类型
-    private String type;
+    /**
+     * 项目类型
+     */
+    private String  type;
 
-    // 选项描述
-    private String description;
+    /**
+     * 项目描述
+     */
+    private String  description;
 
-    // 项目排序
+    /**
+     * 项目排序
+     */
     private Integer sort;
 
+    /**
+     * 父级
+     */
     private Integer parent;
+
+    /**
+     * 项目下文章数
+     */
+    @Ignore
+    private Integer count;
 
 }
